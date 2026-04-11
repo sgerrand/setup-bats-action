@@ -1,5 +1,4 @@
 import {
-  mock,
   spyOn,
   beforeEach,
   afterEach,
@@ -12,18 +11,13 @@ import * as core from '@actions/core'
 import * as installer from '../src/installer'
 import {run} from '../src/main'
 
-// Mock the installer module so main.ts doesn't trigger real downloads
-mock.module('../src/installer', () => ({
-  installBats: mock()
-}))
-
-const installBatsMock = installer.installBats as unknown as Mock
-
+let installBatsMock: Mock
 let getInputSpy: Mock
 let setOutputSpy: Mock
 let setFailedSpy: Mock
 
 beforeEach(() => {
+  installBatsMock = spyOn(installer, 'installBats')
   getInputSpy = spyOn(core, 'getInput')
   setOutputSpy = spyOn(core, 'setOutput').mockImplementation(() => {})
   setFailedSpy = spyOn(core, 'setFailed').mockImplementation(() => {})
@@ -38,7 +32,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  mock.restore()
+  installBatsMock.mockRestore()
+  getInputSpy.mockRestore()
+  setOutputSpy.mockRestore()
+  setFailedSpy.mockRestore()
 })
 
 describe('run', () => {
