@@ -1,6 +1,6 @@
 {
   "name": "setup-bats-action",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "GitHub Action to install BATS (Bash Automated Testing System)",
   "main": "dist/index.js",

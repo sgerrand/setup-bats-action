@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/sgerrand/setup-bats-action/compare/v1.0.0...v1.0.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* **release:** drop package-name prefix from release tags ([0a837df](https://github.com/sgerrand/setup-bats-action/commit/0a837dfa30f7e140ef767e8756f7af8fd35bd8d7))
+
 ## 1.0.0 (2026-04-11)
 
 * initial public release
