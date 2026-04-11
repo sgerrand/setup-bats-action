@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+  pull_request:
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check formatting
+        run: bun run format-check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun run test
+
+      - name: Build
+        run: bun run build
+
+      - name: Check dist/ is current
+        run: |
+          if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes in dist/ after build."
+            echo "Run 'bun run build' locally and commit the result."
+            git diff --ignore-space-at-eol --text dist/
+            exit 1
+          fi
+
+  integration:
+    name: Integration (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: build-and-test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install BATS (explicit version)
+        id: setup-bats
+        uses: ./
+        with:
+          version: '1.11.0'
+
+      - name: Verify version output
+        shell: bash
+        run: |
+          echo "Output version: ${{ steps.setup-bats.outputs.version }}"
+          test "${{ steps.setup-bats.outputs.version }}" = "1.11.0"
+
+      - name: Verify bats is on PATH
+        shell: bash
+        run: bats --version
+
+      - name: Install BATS (latest)
+        uses: ./
+        with:
+          version: latest
+
+      - name: Verify bats runs after latest install
+        shell: bash
+        run: bats --version

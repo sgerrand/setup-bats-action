@@ -1,0 +1,49 @@
+{
+  "name": "setup-bats-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action to install BATS (Bash Automated Testing System)",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "ncc build src/main.ts -o dist --license licenses.txt",
+    "format": "prettier --config ./.prettierrc.js --write \"**/*.{ts,yml,yaml}\"",
+    "format-check": "prettier --config ./.prettierrc.js --check \"**/*.{ts,yml,yaml}\"",
+    "lint": "eslint --config ./.eslintrc.js \"**/*.ts\"",
+    "lint:fix": "eslint --config ./.eslintrc.js \"**/*.ts\" --fix",
+    "test": "jest --runInBand --coverage",
+    "all": "bun run format && bun run lint:fix && bun run build && bun run test"
+  },
+  "keywords": [
+    "actions",
+    "bats",
+    "bash",
+    "testing",
+    "setup"
+  ],
+  "author": "Sasha Gerrand",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/http-client": "^2.2.1",
+    "@actions/tool-cache": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^24.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "@vercel/ncc": "^0.38.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-jest": "^27.9.0",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^29.7.0",
+    "jest-circus": "^29.7.0",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.3.2",
+    "typescript": "^5.9.3"
+  }
+}

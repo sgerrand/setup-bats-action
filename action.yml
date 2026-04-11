@@ -1,0 +1,29 @@
+name: 'Setup BATS'
+author: 'Sasha Gerrand'
+description: 'Install BATS (Bash Automated Testing System) in a GitHub Actions workflow'
+branding:
+  icon: 'terminal'
+  color: 'green'
+
+inputs:
+  version:
+    description: >
+      BATS version to install. Accepts with or without a leading "v" prefix
+      (e.g. "1.11.0" or "v1.11.0"). Use "latest" to auto-resolve the most
+      recent release from the GitHub API.
+    required: true
+    default: 'latest'
+  token:
+    description: >
+      GitHub token used for API calls when resolving "latest". Defaults to
+      the built-in workflow token, which is sufficient for public rate limits.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  version:
+    description: 'Installed BATS version without leading "v" (e.g. "1.13.0")'
+
+runs:
+  using: node24
+  main: dist/index.js
