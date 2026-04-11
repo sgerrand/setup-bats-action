@@ -29,7 +29,7 @@ A GitHub Action to install [BATS (Bash Automated Testing System)](https://github
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v6
   - uses: sgerrand/setup-bats-action@v1
   - run: bats tests/
 ```
@@ -38,7 +38,7 @@ steps:
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v6
   - uses: sgerrand/setup-bats-action@v1
     with:
       version: '1.11.0'
@@ -49,7 +49,7 @@ steps:
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v6
   - id: bats
     uses: sgerrand/setup-bats-action@v1
   - run: echo "Running BATS ${{ steps.bats.outputs.version }}"
