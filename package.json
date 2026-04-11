@@ -14,7 +14,8 @@
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint \"**/*.ts\" --fix",
     "test": "bun test --coverage",
-    "all": "bun run format && bun run lint:fix && bun run build && bun run test"
+    "all": "bun run format && bun run lint:fix && bun run build && bun run test",
+    "prepare": "lefthook install"
   },
   "keywords": [
     "actions",
@@ -40,6 +41,7 @@
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-n": "^17.24.0",
+    "lefthook": "^2.1.5",
     "prettier": "^3.6.2",
     "typescript": "^6.0.2"
   }

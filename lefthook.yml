@@ -1,0 +1,5 @@
+pre-commit:
+  commands:
+    prettier:
+      glob: '*.{md,ts,yml,yaml}'
+      run: bunx prettier --config ./.prettierrc.js --check {staged_files}
