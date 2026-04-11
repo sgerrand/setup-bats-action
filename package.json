@@ -24,7 +24,7 @@
     "setup"
   ],
   "author": "Sasha Gerrand",
-  "license": "MIT",
+  "license": "BSD-2-Clause",
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/http-client": "^2.2.1",
