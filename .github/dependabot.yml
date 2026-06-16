@@ -25,6 +25,11 @@ updates:
       prefix: build
       include: scope
     groups:
+      actions-runtime:
+        patterns:
+          - '@actions/*'
       node:
         patterns:
           - '*'
+        exclude-patterns:
+          - '@actions/*'
