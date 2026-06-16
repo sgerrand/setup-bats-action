@@ -28,6 +28,8 @@ This is a TypeScript GitHub Action that installs BATS (Bash Automated Testing Sy
 
 **Bundling:** `@vercel/ncc` bundles `src/main.ts` into `dist/index.js` (plus `dist/licenses.txt`). The `dist/` directory is committed to git — GitHub Actions executes it directly. The `lib/` tsc intermediate output is gitignored.
 
+**Dependencies:** Anything imported by `src/` is a runtime dependency and gets bundled into `dist/`. These currently are all `@actions/*` packages. When you add a new runtime dependency that `src/` imports, also add its name pattern to the `actions-runtime` group in `.github/dependabot.yml`. Bun does not support `dependency-type` scoping, so the split between runtime and dev dependencies is maintained by name patterns there, not automatically.
+
 **Entry point:** `action.yml` points to `dist/index.js`, which executes `src/main.ts`. `src/main.ts` exports `run()` (for testability) and calls it under a `require.main === module` guard.
 
 **Source files:**
