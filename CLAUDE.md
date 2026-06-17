@@ -28,6 +28,8 @@ This is a TypeScript GitHub Action that installs BATS (Bash Automated Testing Sy
 
 **Bundling:** esbuild bundles `src/main.ts` into `dist/index.js` (plus `dist/index.js.LEGAL.txt` via `--legal-comments=external`). There is no intermediate build step — esbuild reads `src/` and writes `dist/` in one pass. The `dist/` directory is committed to git — GitHub Actions executes it directly.
 
+The bundle includes dependency code, so its exact bytes depend on the installed dependency versions. Always run `bun install --frozen-lockfile` before `bun run build` when checking or regenerating `dist/`. A local `node_modules` that has drifted from `bun.lock` produces a different bundle, which looks like a stale `dist/` but is not. CI builds from the frozen lockfile, so matching it locally requires the frozen install first.
+
 **Dependencies:** Anything imported by `src/` is a runtime dependency and gets bundled into `dist/`. These currently are all `@actions/*` packages. When you add a new runtime dependency that `src/` imports, also add its name pattern to the `actions-runtime` group in `.github/dependabot.yml`. Bun does not support `dependency-type` scoping, so the split between runtime and dev dependencies is maintained by name patterns there, not automatically.
 
 **Entry point:** `action.yml` points to `dist/index.js`, which executes `src/main.ts`. `src/main.ts` exports `run()` (for testability) and calls it under a `require.main === module` guard.
