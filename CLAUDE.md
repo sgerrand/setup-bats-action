@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 bun run test          # Run unit tests with coverage
-bun run build         # Bundle src/main.ts → dist/index.js via @vercel/ncc
+bun run build         # Bundle src/main.ts → dist/index.js via esbuild
 bun run lint          # ESLint
 bun run lint:fix      # ESLint with auto-fix
 bun run format        # Prettier (write)
@@ -17,16 +17,16 @@ bun run all           # format + lint:fix + build + test
 Run a single test file:
 
 ```bash
-bun run test -- --testPathPattern=installer
+bun test __tests__/installer.test.ts   # or filter by name: bun test -t <name>
 ```
 
 ## Architecture
 
 This is a TypeScript GitHub Action that installs BATS (Bash Automated Testing System) from GitHub release archives.
 
-**Module system:** CommonJS (no `"type": "module"`). tsconfig targets ES2022 with `"module": "commonjs"`. Imports have no `.js` extension.
+**Module system:** CommonJS (no `"type": "module"`). esbuild emits CommonJS (`--format=cjs --target=node24`). Imports have no `.js` extension. `tsc` never runs; `tsconfig.json` is only for editor type-checking.
 
-**Bundling:** `@vercel/ncc` bundles `src/main.ts` into `dist/index.js` (plus `dist/licenses.txt`). The `dist/` directory is committed to git — GitHub Actions executes it directly. The `lib/` tsc intermediate output is gitignored.
+**Bundling:** esbuild bundles `src/main.ts` into `dist/index.js` (plus `dist/index.js.LEGAL.txt` via `--legal-comments=external`). There is no intermediate build step — esbuild reads `src/` and writes `dist/` in one pass. The `dist/` directory is committed to git — GitHub Actions executes it directly.
 
 **Dependencies:** Anything imported by `src/` is a runtime dependency and gets bundled into `dist/`. These currently are all `@actions/*` packages. When you add a new runtime dependency that `src/` imports, also add its name pattern to the `actions-runtime` group in `.github/dependabot.yml`. Bun does not support `dependency-type` scoping, so the split between runtime and dev dependencies is maintained by name patterns there, not automatically.
 
@@ -39,4 +39,4 @@ This is a TypeScript GitHub Action that installs BATS (Bash Automated Testing Sy
 
 **BATS installation:** Downloads `https://github.com/bats-core/bats-core/archive/v<VERSION>.tar.gz` (Linux/macOS) or `.zip` (Windows). Extracts to an outer directory containing `bats-core-<version>/` — the inner directory is what gets cached via `@actions/tool-cache`. `bin/bats` computes its own `BATS_ROOT` dynamically, so adding `<cached>/bin` to PATH is sufficient; `install.sh` is not run.
 
-**Testing:** `jest.spyOn` for `@actions/core` and `@actions/tool-cache`. `os` module is mocked entirely via `jest.mock('os')` (because `os.platform` is non-configurable). `HttpClient.prototype.getJson` is spied on the prototype.
+**Testing:** Tests use `bun:test`. `spyOn` for `@actions/core` and `@actions/tool-cache`. The `os` module is replaced via `mock.module` (because `os.platform` is non-configurable). `HttpClient.prototype.getJson` is spied on the prototype.
