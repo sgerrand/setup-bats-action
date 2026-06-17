@@ -1,9 +1,6 @@
 # Dependency directory
 node_modules/
 
-# Intermediate TypeScript compilation output (dist/ is committed, lib/ is not)
-lib/
-
 # Test runner temp files
 __tests__/runner/*
 
@@ -21,9 +18,6 @@ yarn-error.log*
 
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# TypeScript cache
-*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
