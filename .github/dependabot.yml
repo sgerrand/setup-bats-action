@@ -25,14 +25,23 @@ updates:
       prefix: build
       include: scope
     groups:
+      # Bundled into dist/ — src/ imports these directly.
       actions-runtime:
         patterns:
           - '@actions/*'
+      # Generates dist/ — esbuild codegen differs between versions, so a bump
+      # here rewrites the bundle without any source change. Kept separate so
+      # those PRs are obvious.
+      bundler:
+        patterns:
+          - 'esbuild'
+      # Everything else: types, linters, formatters. Never reaches dist/.
       node:
         patterns:
           - '*'
         exclude-patterns:
           - '@actions/*'
+          - 'esbuild'
     ignore:
       # TypeScript 7 is the Go rewrite. Its JS API drops internals that
       # @typescript-eslint still uses, and no released version supports it
