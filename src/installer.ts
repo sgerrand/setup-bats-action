@@ -12,8 +12,14 @@ interface GitHubRelease {
   tag_name: string
 }
 
+const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
+
 export function normalizeVersion(version: string): string {
-  return version.startsWith('v') ? version.slice(1) : version
+  const normalized = version.startsWith('v') ? version.slice(1) : version
+  if (!VERSION_PATTERN.test(normalized)) {
+    throw new Error(`Invalid BATS version: ${version}`)
+  }
+  return normalized
 }
 
 export async function resolveLatestVersion(token: string): Promise<string> {
