@@ -32,6 +32,14 @@ The bundle includes dependency code, so its exact bytes depend on the installed 
 
 **Dependencies:** Anything imported by `src/` is a runtime dependency and gets bundled into `dist/`. These currently are all `@actions/*` packages. When you add a new runtime dependency that `src/` imports, also add its name pattern to the `actions-runtime` group in `.github/dependabot.yml`. Bun does not support `dependency-type` scoping, so the split between runtime and dev dependencies is maintained by name patterns there, not automatically.
 
+Two different things can change `dist/`, and `.github/dependabot.yml` groups bun updates to keep them apart:
+
+- `actions-runtime` (`@actions/*`) — bundled into `dist/`, so a bump rewrites it.
+- `bundler` (`esbuild`) — generates `dist/`. Its codegen differs between versions, so a bump rewrites the bundle with no source change at all.
+- `node` (everything else) — types, linters, formatters. Never reaches `dist/`.
+
+Type-only packages such as `@types/node` and `bun-types` belong in `devDependencies`. esbuild strips types without type-checking and never resolves `@types/*`, and `tsc` does not run during the build, so those versions cannot affect the bundle. If a dependency bump changes `dist/`, look at `@actions/*` or `esbuild` — not the type stubs that happened to be in the same PR.
+
 **Entry point:** `action.yml` points to `dist/index.js`, which executes `src/main.ts`. `src/main.ts` exports `run()` (for testability) and calls it under a `require.main === module` guard.
 
 **Source files:**
