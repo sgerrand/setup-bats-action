@@ -27,8 +27,8 @@
   "author": "Sasha Gerrand",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@actions/core": "^3.0.0",
-    "@actions/http-client": "^4.0.0",
+    "@actions/core": "^3.0.1",
+    "@actions/http-client": "^4.0.1",
     "@actions/tool-cache": "^4.0.0"
   },
   "devDependencies": {
