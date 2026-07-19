@@ -33,3 +33,10 @@ updates:
           - '*'
         exclude-patterns:
           - '@actions/*'
+    ignore:
+      # TypeScript 7 is the Go rewrite. Its JS API drops internals that
+      # @typescript-eslint still uses, and no released version supports it
+      # (peer range is >=4.8.4 <6.1.0). Unpin once it does.
+      - dependency-name: typescript
+        versions:
+          - '>=7'
