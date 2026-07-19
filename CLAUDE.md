@@ -41,4 +41,6 @@ The bundle includes dependency code, so its exact bytes depend on the installed 
 
 **BATS installation:** Downloads `https://github.com/bats-core/bats-core/archive/v<VERSION>.tar.gz` (Linux/macOS) or `.zip` (Windows). Extracts to an outer directory containing `bats-core-<version>/` — the inner directory is what gets cached via `@actions/tool-cache`. `bin/bats` computes its own `BATS_ROOT` dynamically, so adding `<cached>/bin` to PATH is sufficient; `install.sh` is not run.
 
+**Releases:** `.github/workflows/release.yml` calls the [`release-mate/action`](https://github.com/release-mate/action) reusable workflow on every push to `main`. It runs release-please with a short-lived GitHub App token instead of a PAT, so the release PR and tag can trigger other workflows. Config stays in `release-please-config.json` and `.release-please-manifest.json`. The workflow needs two repository secrets: `RELEASE_MATE_CLIENT_ID` and `RELEASE_MATE_PRIVATE_KEY`. Merging the release PR cuts a GitHub Release, which triggers `publish.yml` to move the major version tag.
+
 **Testing:** Tests use `bun:test`. `spyOn` for `@actions/core` and `@actions/tool-cache`. The `os` module is replaced via `mock.module` (because `os.platform` is non-configurable). `HttpClient.prototype.getJson` is spied on the prototype.
