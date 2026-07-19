@@ -3,3 +3,18 @@ pre-commit:
     prettier:
       glob: '*.{md,ts,yml,yaml}'
       run: bunx prettier --config ./.prettierrc.js --check {staged_files}
+
+pre-push:
+  commands:
+    test:
+      run: bun run test
+    dist:
+      run: |
+        bun install --frozen-lockfile
+        bun run build
+        if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
+          echo "Detected uncommitted changes in dist/ after build."
+          echo "Run 'bun run build' locally and commit the result."
+          git diff --ignore-space-at-eol --text dist/
+          exit 1
+        fi
