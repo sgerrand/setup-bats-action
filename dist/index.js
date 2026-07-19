@@ -24062,8 +24062,13 @@ var path6 = __toESM(require("path"));
 var TOOL_NAME = "bats";
 var OWNER = "bats-core";
 var REPO = "bats-core";
+var VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 function normalizeVersion(version) {
-  return version.startsWith("v") ? version.slice(1) : version;
+  const normalized = version.startsWith("v") ? version.slice(1) : version;
+  if (!VERSION_PATTERN.test(normalized)) {
+    throw new Error(`Invalid BATS version: ${version}`);
+  }
+  return normalized;
 }
 async function resolveLatestVersion(token) {
   const client = new HttpClient3("setup-bats-action", [], {

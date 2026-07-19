@@ -66,6 +66,18 @@ describe('normalizeVersion', () => {
   it('does not strip v from interior of string', () => {
     expect(normalizeVersion('1.0.0-v2')).toBe('1.0.0-v2')
   })
+
+  it('rejects path traversal sequences', () => {
+    expect(() =>
+      normalizeVersion('/../../../attacker/evil/archive/v1.tar.gz#')
+    ).toThrow('Invalid BATS version')
+  })
+
+  it('rejects versions that are not dotted numbers', () => {
+    expect(() => normalizeVersion('latest')).toThrow('Invalid BATS version')
+    expect(() => normalizeVersion('1.11')).toThrow('Invalid BATS version')
+    expect(() => normalizeVersion('')).toThrow('Invalid BATS version')
+  })
 })
 
 describe('getDownloadUrl', () => {
